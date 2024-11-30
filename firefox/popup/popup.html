@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Wallet</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    body {
+        -webkit-text-size-adjust: 100%; /* Default text size adjustment */
+        -moz-text-size-adjust: 100%;    /* For Firefox */
+        -ms-text-size-adjust: 100%;     /* For IE */
+        text-size-adjust: 100%;         /* Standard property */
+        font-family: Arial, sans-serif;
+    }
+    select, button { margin: 10px; padding: 10px; }
+  </style>
+</head>
+<body>
+    <!-- Popup content -->
+    <div class="w3-container w3-small w3-card-4 w3-light-grey w3-padding-16">
+        <h4 class="w3-text-teal w3-center">ELMX Wallet</h4>
+        <select id="networkSelect" class="w3-select w3-border w3-margin-bottom">
+            <option value="" disabled selected>Select Network</option>
+            <option value="test">test.exemptliquiditymarket.exchange</option>
+            <option value="live">live.exemptliquiditymarket.exchange</option>
+        </select>
+        <!-- Dropdown list of accounts -->
+        <select id="accountSelect" class="w3-select w3-border w3-margin-bottom">
+            <option value="" disabled selected>Select Account</option>
+            <!-- Wallet accounts will be populated here -->
+        </select>
+        <button id="buy-token" class="w3-btn w3-blue w3-full w3-margin-bottom w3-block" disabled>Buy ELMX Tokens</button>
+        <!-- Buttons for Buy/Sell and Token Actions -->
+        <button id="import-wallet" class="w3-btn w3-purple w3-full w3-margin-bottom w3-block" title="imports wallet into local database and not the blockchain network">Import Wallet</button>
+        <fieldset>
+            <legend>Security Tokens</legend>
+            <label for="security-token">Security Token</label>
+            <select id="security-token" class="w3-select w3-border w3-margin-bottom">
+                <option value="" disabled selected>Select your security token</option>
+                <!-- Wallet accounts will be populated here -->
+            </select>
+            <button id="import-security" class="w3-btn w3-green w3-full w3-margin-bottom w3-block">Import</button>
+            <button id="view-security" class="w3-btn w3-yellow w3-full w3-margin-bottom w3-block" disabled>View</button>
+            <button id="buy-security" class="w3-btn w3-blue w3-full w3-margin-bottom w3-block" disabled>Buy</button>    
+            <button id="sell-security" class="w3-btn w3-red w3-full w3-margin-bottom w3-block" disabled>Sell</button>
+        </fieldset>
+        <!-- ERROR DIALOG -->
+        <div id="error-dialog" class="w3-modal">
+            <div class="w3-modal-content">
+                <div class="w3-container w3-white">
+                    <h3 class="w3-red" id="error-dialog-title"></h3>
+                    <p id="error-dialog-message"></p>
+                    <button id="error-dialog-cancel" class="w3-button w3-block w3-orange">Cancel</button>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <!-- VIEW TOKEN DIALOG -->
+        <div id="view-token-dialog" class="w3-modal">
+            <div class="w3-modal-content">
+                <div class="w3-container w3-white">
+                    <h3 class="w3-yellow">Token Information</h3>
+                    <fieldset>
+                        <label for="view-token-dialog-name">Name</label>
+                        <input type="text" id="view-token-dialog-name" class="w3-input w3-block w3-light-grey" value="" disabled />
+                        <label for="view-token-dialog-symbol">Symbol</label>
+                        <input type="text" id="view-token-dialog-symbol" class="w3-input w3-block w3-light-grey" value="" disabled />
+                        <label for="view-token-dialog-totalSupply">Total Supply</label>
+                        <input type="text" id="view-token-dialog-totalSupply" class="w3-input w3-block w3-light-grey" value="" disabled />
+                        <label for="view-token-dialog-balance">Balance</label>
+                        <input type="text" id="view-token-dialog-balance" class="w3-input w3-block w3-light-grey" value="" disabled />            
+                    </fieldset>
+                    <button class="w3-button w3-block w3-orange" id="view-token-dialog-cancel">Cancel</button>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <!-- BUY ELMX TOKEN DIALOG -->
+        <div id="buy-elmxtoken-dialog" class="w3-modal">
+            <div class="w3-modal-content">
+                <div class="w3-container w3-white">
+                    <h3 class="w3-green">Buy ELMX Tokens</h3>
+                    <label for="buy-elmxtoken-dialog-amount">Amount</label>
+                    <input type="number" steps="any" id="buy-elmxtoken-dialog-amount" value="0.00" class="w3-input w3-block" />
+                    <input type="hidden" id="buy-elmxtoken-dialog-address" value="" />
+                    <button class="w3-button w3-block w3-black" id="buy-elmxtoken-dialog-submit">Import</button>
+                    <br/>
+                    <button class="w3-button w3-block w3-orange" id="buy-elmxtoken-dialog-cancel">Cancel</button>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <!-- IMPORT WALLET DIALOG -->
+        <div id="import-wallet-dialog" class="w3-modal">
+            <div class="w3-modal-content">
+                <div class="w3-container w3-white">
+                    <h3 class="w3-purple">Import Wallet</h3>
+                    <label for="import-wallet-dialog-address">Address</label>
+                    <input type="text" id="import-wallet-dialog-address" class="w3-input w3-block" value="" >
+                    <button class="w3-button w3-block w3-black" id="import-wallet-dialog-submit">Import</button>
+                    <br/>
+                    <button class="w3-button w3-block w3-orange" id="import-wallet-dialog-cancel">Cancel</button>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <!-- IMPORT TOKEN DIALOAG-->
+        <div id="import-token-dialog" class="w3-modal">
+            <div class="w3-modal-content">
+                <div class="w3-container w3-white">
+                    <h3 class="w3-green">Import Token</h3>
+                    <label for="import-token-dialog-address">Contract Address</label>
+                    <input type="text" id="import-token-dialog-address" class="w3-input w3-block" value="" >
+                    <button class="w3-button w3-block w3-black" id="import-token-dialog-submit">Import</button>
+                    <br/>
+                    <button class="w3-button w3-block w3-orange" id="import-token-dialog-cancel">Cancel</button>
+                    <br/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup JS to fetch accounts and handle button actions -->
+    <script src="functions.js"></script>
+    <script src="../content.js"></script>
+    <script src="popup.js"></script>
+</body>
+</html>
